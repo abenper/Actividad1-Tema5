@@ -1,40 +1,29 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Social A (Anti-patrones)</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Social B (Buenas Prácticas)</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-
+<ion-content class="ion-padding" [scrollY]="false">
   <ion-item>
     <ion-input
       placeholder="Buscar en posts..."
-      [value]="query"
-      (ionInput)="onInput($event)">
+      [formControl]="searchControl">
     </ion-input>
   </ion-item>
 
-  <ion-note *ngIf="error" color="danger">{{ error }}</ion-note>
+  <cdk-virtual-scroll-viewport itemSize="80" style="height: 70vh; margin-top: 10px;">
 
-  <div *ngIf="loading" style="margin-top: 12px;">
-    <ion-spinner></ion-spinner>
-    <ion-note> Cargando...</ion-note>
-  </div>
-
-  <!-- Anti-patrón: lista enorme, sin trackBy -->
-  <ion-list *ngIf="filtered.length > 0">
-    <ion-item *ngFor="let p of filtered" (click)="openPost(p)">
-      <ion-label class="ion-text-wrap">
-        <b>{{ prettyTitle(p) }}</b>
-        <div>{{ p.body }}</div>
+    <ion-item
+      *cdkVirtualFor="let p of filteredPosts$ | async; trackBy: trackById"
+      (click)="openPost(p)"
+      button> <ion-label class="ion-text-wrap">
+        <h3><b>{{ p | prettyTitle }}</b></h3>
+        <p>{{ p.body }}</p>
       </ion-label>
     </ion-item>
-  </ion-list>
 
-  <div style="margin-top: 12px;">
-    <ion-note>Render items: <b>{{ kpi.kpis.renderItems }}</b></ion-note><br />
-    <ion-note>Subs activas (aprox): <b>{{ kpi.kpis.activeSubscriptions }}</b></ion-note>
-  </div>
+  </cdk-virtual-scroll-viewport>
 
   <div style="display:flex; gap: 10px; margin-top: 16px;">
     <ion-button expand="block" fill="outline" (click)="goSettings()">Métricas</ion-button>
